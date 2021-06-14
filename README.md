@@ -1,2 +1,2 @@
 # lens-calibration
-Calibrating camera by correcting for lens distortion
+Calibrating camera by correcting for lens distortion using opencv library
