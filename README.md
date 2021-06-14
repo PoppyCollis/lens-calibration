@@ -1,6 +1,6 @@
 # lens-calibration
 
-Calibrating camera by correcting for lens distortion using opencv library
+Camera calibration using opencv library to correcting for lens distortion
 
 get-dv-image.py file includes the process of taking a photo using the dynamic vision sensor camera
 
