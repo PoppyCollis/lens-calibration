@@ -41,13 +41,14 @@ for fname in images:
         cv.imshow('img', img)
         cv.waitKey(500)
 cv.destroyAllWindows()
-print("^These are the images in which a checkerboard could be found and drawn. If less than 10, then try different images")
 
+print("The above images are ones in which a checkerboard could be found and drawn")
+print("There are "+ str(len(objpoints)) +" images - if this number is less than 10, then try some different images")
 
 #calibration
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-img = cv.imread('dist_1.jpg')
+img = cv.imread('./test-images/xtr_test_5.jpg')
 h,  w = img.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
