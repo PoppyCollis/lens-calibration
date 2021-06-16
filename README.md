@@ -1,7 +1,7 @@
 # lens-calibration
-Camera calibration using opencv library to correcting for lens distortion.
+Camera calibration using opencv library to correct for lens distortion.
 
-The calibration process involves taking a set of images (you should have at least 15), in which you have a checkerboard of known size. A checkerboard can be printed out and fixed to some kind of flat surface in order to use for taking images. You should make sure that the checkerboard has a plain border surrounding the pattern at least as large as the width of one of the squares (chessboard-pattern-7x10.png has been provided for you).
+The calibration process involves taking a set of images (you should have at least 15), in which you have a checkerboard of known size. A checkerboard can be printed out and fixed to some kind of flat surface in order to use for calibrating the camera. You should make sure that the checkerboard has a plain border surrounding the pattern at least as large as the width of one of the squares (chessboard-pattern-7x10.png has been provided for you).
 
 camera-calibration.py 
 
