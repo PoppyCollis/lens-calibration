@@ -3,9 +3,7 @@ Camera calibration using opencv library to correct for lens distortion.
 
 The calibration process involves taking a set of images (you should have at least 15), in which you have a checkerboard of known size. A checkerboard can be printed out and fixed to some kind of flat surface in order to use for calibrating the camera. You should make sure that the checkerboard has a plain border surrounding the pattern at least as large as the width of one of the squares (chessboard-pattern-7x10.png has been provided for you).
 
-camera-calibration.py 
-
-1. Open file in python IDE.
+1. Open 'camera-calibration.py' in python IDE.
 2. Create files in working directory called 'distorted' and 'calibration'. 
 3. Scroll down to where the main() function is defined and plug in your DV camera server's IP address and port number, and values for nx and ny (these are calculated by adding 1 to the the number of inner columns and rows of your checkerboard respectively), and the path to your images folder (e.g. ./distorted/').
 4. Run the script
