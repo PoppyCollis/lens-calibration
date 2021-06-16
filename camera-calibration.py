@@ -44,9 +44,9 @@ def find_calib_parameters(nx, ny, f_dir='./'):
 
     for f_name in image_files:
         image = np.load(f_name)
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #converts image to greyscale
 
-        # Find the chess board corners
+        # Find the checkerboard corners
         ret, corners = cv2.findChessboardCorners(gray, (ny, nx), None)
 
         # If found, add object points, image points (after refining them using SubPix method)
