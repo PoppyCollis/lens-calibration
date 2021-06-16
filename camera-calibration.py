@@ -12,7 +12,7 @@ import numpy as np
 import cv2
 import dv
 
-#create files in working directory called "distorted" and "calibration"
+# Create files in working directory called "distorted" and "calibration"
 
 
 def get_dv_image(dv_address, dv_frame_port, f_dir):
@@ -31,33 +31,42 @@ def get_dv_image(dv_address, dv_frame_port, f_dir):
             
 
 def find_calib_parameters(nx, ny, f_dir='./'):
-    # termination criteria
+    # Termination criteria allows you to specify the desired accuracy or change in parameters 
+    #at which the iterative algorithm stops (EPS) and the maximum number of iterations or 
+    #elements to compute (MAX_ITER)
+
     #criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
-    # prepare object points, like (0, 0, 0), (1, 0, 0), (2, 0, 0) ..., (6, 5, 0)
+    # Prepare object points, like (0, 0, 0), (1, 0, 0), (2, 0, 0) ..., (6, 5, 0)
     objp = np.zeros((nx * ny, 3), np.float32) 
     objp[:, :2] = np.mgrid[0:ny, 0:nx].T.reshape(-1, 2)
     # Arrays to store object points and image points from all the images.
-    objpoints = [] # 3d point in real world space
-    imgpoints = [] # 2d points in image plane.
-    image_files = glob(f_dir + '*.npy') # you need around 10 images
+    objpoints = [] # 3D point in real world space
+    imgpoints = [] # 2D points in image plane.
+    image_files = glob(f_dir + '*.npy')
 
     for f_name in image_files:
         image = np.load(f_name)
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #converts image to greyscale
+        # cvtColor converts an image from one color space to another (in this case to greyscale)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
 
-        # Find the checkerboard corners
+        # The function attempts to determine whether the input image is a view of the 
+        #chessboard pattern and locate the internal chessboard corners. The function 
+        #returns a non-zero value if all of the corners are found and they are placed 
+        #in a certain order (row by row, left to right in every row). Otherwise, if 
+        #the function fails to find all the corners or reorder them, it returns 0. 
         ret, corners = cv2.findChessboardCorners(gray, (ny, nx), None)
 
         # If found, add object points, image points (after refining them using SubPix method)
         if ret == True:
             print(f_name)
             
-            #this conducts a more refined search in a smaller area of pixels in an attempt to find the corners with greater (subpixel) accuracy
+            # This conducts a more refined search in a smaller area of pixels in an attempt to find the corners with greater (subpixel) accuracy
             corners = cv2.cornerSubPix(gray, corners, (5, 5), (-1, -1), criteria)
             #corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
 
-            # Draw and display the corners
+            # The function draws individual chessboard corners detected either as red circles if the board was not found, 
+            #or as colored corners connected with lines if the board was found.
             cv2.drawChessboardCorners(image, (ny, nx), corners, ret)
             cv2.imshow('image', image)
             k = cv2.waitKey(0)
@@ -71,15 +80,18 @@ def find_calib_parameters(nx, ny, f_dir='./'):
             
     cv2.destroyAllWindows()        
     
-    #record and save the calibration parameters
+    # Record and save the calibration parameters
+    # The function estimates the intrinsic camera parameters and extrinsic parameters for each of the views.
+    # The coordinates of 3D object points and their corresponding 2D projections in each view must be specified.
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
     
     #image = cv2.imread('./test-images/xtr_test_5.jpg')
     image = np.load('./distorted/0.npy')
     h,  w = image.shape[:2]
+    # Returns the new camera intrinsic matrix based on the distortion coefficients
     newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
 
-    #make sure to create a file of this name in your current directory for you arrays to be saved to
+    # Make sure to create a file of this name in your current directory for you arrays to be saved to
     
     np_mtx = np.array(mtx)
     np_dist = np.array(dist)
@@ -96,14 +108,15 @@ def find_calib_parameters(nx, ny, f_dir='./'):
     return mtx, dist, newcameramtx     
     
 def test_undistort(dv_address, dv_frame_port, mtx, dist, newcameramtx):
-    #connect to DV camera
+    # Connect to DV camera
 
     with dv.NetworkFrameInput(dv_address, dv_frame_port) as dv_frame_f:
         print('connected')
         
-        #undistorts video output of camra frame by frame
+        # Undistorts video output of camra frame by frame
         for frame in dv_frame_f:
             image = frame.image
+            # Function transforms an image to compensate for lens distortion.
             image = cv2.undistort(image, mtx, dist, None, newcameramtx)
 
             cv2.imshow('frame', image)
@@ -117,8 +130,8 @@ def test_undistort(dv_address, dv_frame_port, mtx, dist, newcameramtx):
 def main():
     dv_address = '192.168.1.100'
     dv_frame_port = 36001 
-    nx  = 6 # this is calculated by adding 1 to the the number of inner columns of your checkerboard
-    ny = 9 # this is calculated by adding 1 to the the number of inner rows of your checkerboard
+    nx  = 6 # This is calculated by adding 1 to the the number of inner columns of your checkerboard
+    ny = 9 # This is calculated by adding 1 to the the number of inner rows of your checkerboard
     f_dir = './distorted/'
     get_dv_image(dv_address, dv_frame_port, f_dir)
     mtx, dist, newcameramtx = find_calib_parameters (nx, ny, f_dir)
