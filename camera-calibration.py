@@ -194,10 +194,10 @@ def main():
     ny = 9 # This is calculated by adding 1 to the the number of inner rows of your checkerboard
     f_dir = './distorted/'
     get_dv_image(dv_address, dv_frame_port, f_dir)
-    #mtx, dist, newcameramtx = find_calib_parameters (nx, ny, f_dir)
-    #test_undistort(dv_address, dv_frame_port, mtx, dist, newcameramtx)
-    #undistort_test_image(mtx, dist, newcameramtx)
-    #undistort_point(mtx, dist)
+    mtx, dist, newcameramtx = find_calib_parameters (nx, ny, f_dir)
+    test_undistort(dv_address, dv_frame_port, mtx, dist, newcameramtx)
+    undistort_test_image(mtx, dist, newcameramtx)
+    undistort_point(mtx, dist)
  
 """
     #convert numpy array into x, y coordinates
