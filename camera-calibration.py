@@ -5,6 +5,7 @@
 Created on Mon Jun 14 12:40:18 2021
 
 @author: poppy
+see OpenCV documentation: https://docs.opencv.org/3.4/dc/dbb/tutorial_py_calibration.html
 """
 
 from glob import glob
